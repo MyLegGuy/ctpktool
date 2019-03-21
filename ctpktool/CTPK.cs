@@ -153,20 +153,81 @@ namespace ctpktool
             writer.Write(TextureInfoSection);
         }
 
-        public static Ctpk Create(string inputPath, string outputPath)
+        static string makePathAbsolute(string _passedFilename){
+            if (!Path.IsPathRooted(_passedFilename)){
+                return Path.GetFullPath(_passedFilename);
+            }else{
+                return _passedFilename;
+            }
+        }
+        static string removeEndSlash(string _passedDirectory){
+            if (_passedDirectory[_passedDirectory.Length-1]==Path.DirectorySeparatorChar || _passedDirectory[_passedDirectory.Length-1]==Path.AltDirectorySeparatorChar){
+                return _passedDirectory.Substring(0,_passedDirectory.Length-1);
+            }else{
+                return _passedDirectory;
+            }
+        }
+        static string makePathGood(string _passedPath){
+            return removeEndSlash(removeEndSlash(_passedPath));
+        }
+
+        public static Ctpk Create(string inputPath, string outputPath, string _patchPath)
         {
             if (!Directory.Exists(inputPath))
             {
                 return null;
             }
             
+            string _goodInPath = makePathGood(inputPath);
+            string _goodPatchPath = _patchPath!=null ? makePathGood(_patchPath) : null;
+
             Ctpk file = new Ctpk();
 
             // Look for all xml definition files in the folder
-            var files = Directory.GetFiles(inputPath, "*.xml", SearchOption.AllDirectories);
-            foreach (var xmlFilename in files)
+            string[] _xmlFiles = Directory.GetFiles(_goodInPath, "*.xml", SearchOption.AllDirectories);
+            string[] _pngFiles = new string[_xmlFiles.Length];
+            Array.Clear(_pngFiles,0,_pngFiles.Length);
+            if (_goodPatchPath!=null){
+                string[] patchFiles = Directory.GetFiles(_goodPatchPath,"*",SearchOption.AllDirectories);
+                // Merge patchFiles into files
+                for (int j=0;j<patchFiles.Length;++j){
+                    string _choppedName = Path.ChangeExtension(patchFiles[j].Substring(_goodPatchPath.Length),null);
+                    int i;
+                    for (i=0;i<_xmlFiles.Length;++i){
+                        if (Path.ChangeExtension(_xmlFiles[i].Substring(_goodInPath.Length),null)==_choppedName){
+                            if (Path.GetExtension(patchFiles[j])==".xml"){
+                                _xmlFiles[i] = patchFiles[j];
+                            }else{
+                                _pngFiles[i] = patchFiles[j];
+                            }
+                            break;
+                        }
+                    }
+                    if (i==_xmlFiles.Length){
+                        throw new Exception(String.Format("Could not find replacement for {0} from {1} to put in {2}",patchFiles[j],_goodPatchPath,_goodInPath));
+                    }
+                }
+                //patchFiles = Directory.GetFiles(_goodPatchPath,"*.png",SearchOption.AllDirectories);
+                //// Merge patchFiles into files
+                //for (int j=0;j<patchFiles.Length;++j){
+                //    int i;
+                //    for (i=0;i<files.Length;++i){
+                //        if (files[i].Substring(_goodInPath.Length)==patchFiles[j].Substring(_goodPatchPath.Length)){
+                //            files[i] = patchFiles[j];
+                //            _isPatched[i]=true;
+                //            break;
+                //        }
+                //    }
+                //    if (i==files.Length){
+                //        throw new Exception(String.Format("Could not find replacement for {0} from {1} to put in {2}",patchFiles[j],_goodPatchPath,_goodInPath));
+                //    }
+                //}
+
+            }
+
+            for (int i=0;i<_xmlFiles.Length;++i)
             {
-                CTPKEntry entry = CTPKEntry.FromFile(xmlFilename, inputPath);
+                CTPKEntry entry = CTPKEntry.FromFile(_xmlFiles[i], _goodInPath, _pngFiles[i]);
                 file._entries.Add(entry);
             }
 

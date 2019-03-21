@@ -203,12 +203,12 @@ namespace ctpktool
             }
         }
 
-        public static CTPKEntry FromFile(string filename, string foldername)
+        public static CTPKEntry FromFile(string _xmlFilename, string foldername, string _pngFilename)
         {
-            if (!File.Exists(filename))
+            if (!File.Exists(_xmlFilename))
                 return new CTPKEntry();
 
-            using (XmlTextReader reader = new XmlTextReader(filename))
+            using (XmlTextReader reader = new XmlTextReader(_xmlFilename))
             {
                 reader.WhitespaceHandling = WhitespaceHandling.All;
 
@@ -218,10 +218,15 @@ namespace ctpktool
 
                 Console.WriteLine("Reading {0}...", entry.FilePath);
 
-                var path = entry.FilePath;
-
-                if (!String.IsNullOrWhiteSpace(foldername))
-                    path = Path.Combine(foldername, path);
+                string path;
+                if (_pngFilename==null){
+                    path = entry.FilePath;
+                    if (!String.IsNullOrWhiteSpace(foldername)){
+                        path = Path.Combine(foldername, path);
+                    }
+                }else{
+                    path=_pngFilename;
+                }
 
                 /*
                 var pixelSize = 3;
