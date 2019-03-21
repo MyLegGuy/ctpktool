@@ -19,10 +19,10 @@ or
 `ctpktool.exe c input_folder -o output.ctpk`  
   
 ### Creating CTPK with patch
-`ctpktool.exe c input_folder p patch_folder` 
-Inside the patch_folder folder, put files you want to **replace** from the input_folder. Putting the xml file in the patch_folder folder is optional.
-Point of this feature is so you don't have to copy the entire ctpk to compile a modified version of it.
-
+`ctpktool.exe c input_folder p patch_folder`   
+Inside the patch_folder folder, put files you want to **replace** from the input_folder. Putting the xml file in the patch_folder folder is optional.  
+Point of this feature is so you don't have to copy the entire ctpk to compile a modified version of it.  
+  
 #### Credits  
 **Normmatt** - For allowing me to use code from texturipper and answering questions about the format  
 **Gericom** - Texture code from EveryFileExplorer (https://github.com/Gericom/EveryFileExplorer)  
