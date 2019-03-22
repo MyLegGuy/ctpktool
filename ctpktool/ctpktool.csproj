@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="Crc32.cs" />
     <Compile Include="CTPK.cs" />
     <Compile Include="CTPKEntry.cs" />

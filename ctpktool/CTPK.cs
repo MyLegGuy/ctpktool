@@ -154,11 +154,7 @@ namespace ctpktool
         }
 
         static string makePathAbsolute(string _passedFilename){
-            if (!Path.IsPathRooted(_passedFilename)){
-                return Path.GetFullPath(_passedFilename);
-            }else{
-                return _passedFilename;
-            }
+            return Path.GetFullPath(_passedFilename);
         }
         static string removeEndSlash(string _passedDirectory){
             if (_passedDirectory[_passedDirectory.Length-1]==Path.DirectorySeparatorChar || _passedDirectory[_passedDirectory.Length-1]==Path.AltDirectorySeparatorChar){
