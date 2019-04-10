@@ -131,7 +131,7 @@ namespace ctpktool
                     break;
                 case TextureFormat.Rgba4:
                     pixel = BitConverter.ToInt16(Data, ofs);
-                    col = Color.FromArgb((pixel & 0xF) * 16, ((pixel >> 12) & 0xF) * 16, ((pixel >> 8) & 0xF) * 16, ((pixel >> 4) & 0xF) * 16);
+                    col = Color.FromArgb((pixel & 0xF) * 17, ((pixel >> 12) & 0xF) * 17, ((pixel >> 8) & 0xF) * 17, ((pixel >> 4) & 0xF) * 17);
                     adjustment = 2;
                     break;
                 case TextureFormat.La8:
