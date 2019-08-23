@@ -187,10 +187,10 @@ namespace ctpktool
                 string[] patchFiles = Directory.GetFiles(_goodPatchPath,"*",SearchOption.AllDirectories);
                 // Merge patchFiles into files
                 for (int j=0;j<patchFiles.Length;++j){
-                    string _choppedName = Path.ChangeExtension(patchFiles[j].Substring(_goodPatchPath.Length),null);
+                    string _choppedName = Path.GetFileNameWithoutExtension(patchFiles[j]);
                     int i;
                     for (i=0;i<_xmlFiles.Length;++i){
-                        if (Path.ChangeExtension(_xmlFiles[i].Substring(_goodInPath.Length),null)==_choppedName){
+                        if (Path.GetFileNameWithoutExtension(_xmlFiles[i])==_choppedName){
                             if (Path.GetExtension(patchFiles[j])==".xml"){
                                 _xmlFiles[i] = patchFiles[j];
                             }else{
@@ -200,25 +200,13 @@ namespace ctpktool
                         }
                     }
                     if (i==_xmlFiles.Length){
-                        throw new Exception(String.Format("Could not find replacement for {0} from {1} to put in {2}",patchFiles[j],_goodPatchPath,_goodInPath));
+						Console.WriteLine("Base path is "+_goodInPath);
+						for (i=0;i<_xmlFiles.Length;++i){
+							Console.WriteLine(String.Format("{0} ({1})",_xmlFiles[i],Path.GetFileNameWithoutExtension(_xmlFiles[i])));
+						}
+                        throw new Exception(String.Format("Could not find replacement for {0} ({3}) from {1} to put in {2}",patchFiles[j],_goodPatchPath,_goodInPath,_choppedName));
                     }
                 }
-                //patchFiles = Directory.GetFiles(_goodPatchPath,"*.png",SearchOption.AllDirectories);
-                //// Merge patchFiles into files
-                //for (int j=0;j<patchFiles.Length;++j){
-                //    int i;
-                //    for (i=0;i<files.Length;++i){
-                //        if (files[i].Substring(_goodInPath.Length)==patchFiles[j].Substring(_goodPatchPath.Length)){
-                //            files[i] = patchFiles[j];
-                //            _isPatched[i]=true;
-                //            break;
-                //        }
-                //    }
-                //    if (i==files.Length){
-                //        throw new Exception(String.Format("Could not find replacement for {0} from {1} to put in {2}",patchFiles[j],_goodPatchPath,_goodInPath));
-                //    }
-                //}
-
             }
 
             for (int i=0;i<_xmlFiles.Length;++i)
